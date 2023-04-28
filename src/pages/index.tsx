@@ -1,5 +1,3 @@
-"use client";
-
 import {Inter} from 'next/font/google'
 import React, {useEffect, useState} from 'react';
 import ItemInput from '@/pages/components/ItemInput';
@@ -25,7 +23,8 @@ const setLS = (key: string, value: any) => {
 }
 
 const Home: React.FC = () => {
-	const isLocalStorageAvailable = typeof window !== 'undefined' && window?.localStorage;
+
+	const [isLocalStorageAvailable, setIsLocalStorageAvailable] = useState(false);
 	const [items, setItems] = useState<Item[]>([]);
 	const [isLocalStorageSavingEnabled, setIsLocalStorageSavingEnabled] = useState(false)
 	const filterDeleted = () => items.filter(i => i.deleted)
@@ -39,6 +38,14 @@ const Home: React.FC = () => {
 	}, [items, isLocalStorageSavingEnabled, isLocalStorageAvailable])
 
 	useEffect(() => {
+		const isWindow = typeof window !== 'undefined';
+		const hasLS = isWindow && !!window?.localStorage;
+
+		setIsLocalStorageAvailable(hasLS);
+
+	}, [])
+
+	useEffect(() => {
 		if (!isLocalStorageAvailable) {
 			return;
 		}
@@ -47,9 +54,9 @@ const Home: React.FC = () => {
 		if (oldData) {
 			oldItems = oldData as Item[]
 			setItems(oldItems)
-			setIsLocalStorageSavingEnabled(true)
 		}
-	}, [])
+		setIsLocalStorageSavingEnabled(true)
+	}, [isLocalStorageAvailable])
 	const handleItemSave = (item: Item) => {
 		setItems([
 			...items,
