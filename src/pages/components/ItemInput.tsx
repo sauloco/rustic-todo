@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {v4} from 'uuid';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPen, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 interface ItemInputProps {
@@ -64,8 +66,10 @@ const ItemInput: React.FC<ItemInputProps> = ({item, onSave, inline = false}) => 
 			mx-3
 		`}>
 		{inline && <h2 className={`font-light text-gray-400`}>Editing task</h2>}
-		<input
-			className={`
+		<div className="flex flex-row items-center gap-3">
+
+			<input
+				className={`
 				appearance-none
 				border-none 
 				outline-none 
@@ -83,11 +87,34 @@ const ItemInput: React.FC<ItemInputProps> = ({item, onSave, inline = false}) => 
 				bg-opacity-25
 				${error && 'placeholder:text-red-300 dark:placeholder:text-pink-400'}
 			`}
-			type="text"
-			value={title}
-			placeholder={`${inline ? 'Modify task' : 'Add a task'}${error ? ' (we kinda need this)' : '...'}`}
-			onKeyDown={(e) => e.key === "Enter" ? validateForm() : null}
-			onChange={event => setTitle(event.target.value)}/>
+				type="text"
+				value={title}
+				placeholder={`${inline ? 'Modify task' : 'Add a task'}${error ? ' (we kinda need this)' : '...'}`}
+				onKeyDown={(e) => e.key === "Enter" ? validateForm() : null}
+				onChange={event => setTitle(event.target.value)}/>
+			<button className={`
+						border-none 
+						outline-none
+						p-3
+						text-xs
+						flex
+						items-center
+						justify-center
+						rounded-full
+						h-6 
+						w-6
+						focus:ring-2
+						focus:bg-opacity-50
+						hover:text-blue-500
+						bg-white
+						dark:bg-gray-700 
+						bg-opacity-75
+						dark:bg-opacity-25
+					`} onClick={validateForm}>
+				{inline ? <FontAwesomeIcon icon={faPen}/> : <FontAwesomeIcon icon={faPlus}/>}
+
+			</button>
+		</div>
 		<textarea
 			className={`
 				appearance-none
@@ -110,26 +137,6 @@ const ItemInput: React.FC<ItemInputProps> = ({item, onSave, inline = false}) => 
 			value={description}
 			placeholder={"If you need it, add a description..."}
 			onChange={event => setDescription(event.target.value)}></textarea>
-
-		<input
-			className={`
-				appearance-none
-				border-none 
-				outline-none 
-				focus:ring 
-				${inline ? 'focus:outline-blue-100' : 'focus:outline-purple-100'} 
-				${inline ? 'dark:focus:outline-blue-900' : 'dark:focus:outline-purple-950'} 
-				text-gray-700
-				dark:text-gray-50 
-				${inline ? 'dark:bg-blue-900' : 'dark:bg-purple-950'} 
-				${inline ? 'bg-blue-100' : 'bg-purple-50'} 
-				p-3 
-				rounded-xl 
-				w-full
-				font-semibold
-				uppercase 
-			`}
-			type="button" value={inline ? "Save changes" : "Add task"} onClick={validateForm}/>
 	</div>
 }
 

@@ -2,9 +2,11 @@ import {Inter} from 'next/font/google'
 import React, {useEffect, useState} from 'react';
 import ItemInput from '@/pages/components/ItemInput';
 import TaskList from '@/pages/components/TaskList';
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faFire, faTrashRestore} from '@fortawesome/free-solid-svg-icons';
 
 const inter = Inter({subsets: ['latin']})
+
 
 const getLS = (key: string) => {
 	const savedData = localStorage.getItem(key)
@@ -114,9 +116,11 @@ const Home: React.FC = () => {
 				`}>Rustic
 				Tasks</h1>
 			<ItemInput onSave={handleItemSave}/>
-			<TaskList title={'Pending'} items={filterPending()} onItemChange={handleItemChange}
+			<TaskList title={`Pending ${filterPending().length ? filterPending().length : ''}`} items={filterPending()}
+			          onItemChange={handleItemChange}
 			          onItemDelete={handleItemChange} emptyMessage={"No pending tasks yet! Add one"}/>
-			<TaskList title={'Already Done'} items={filterDone()} onItemChange={handleItemChange}
+			<TaskList title={`Already Done ${filterDone().length ? filterDone().length : ''}`} items={filterDone()}
+			          onItemChange={handleItemChange}
 			          onItemDelete={handleItemChange}/>
 			{
 				filterDeleted().length
@@ -138,34 +142,46 @@ const Home: React.FC = () => {
 							mt-0
 							w-auto
 						`}>
-						<input className={`
+						<button className={`
 							appearance-none
 							border-none
 							outline-none
 							p-3
+							text-sm
+							flex
+							items-center
+							justify-center
 							rounded-full
 							h-6
-							w-6
+							w-auto
 							hover:bg-opacity-50
 							bg-blue-400
 							bg-opacity-25
 							inline
-						`} type="button" title={'Restore'} onClick={restoreDeletedItems} value=""/>
+						`} title={'Restore'} onClick={restoreDeletedItems} value="">
+							<FontAwesomeIcon icon={faTrashRestore}/>&nbsp;Restore {filterDeleted().length > 1 ? 'all' : 'it'}
+						</button>
 						<span
 							className={`w-auto`}>{`Trash has ${filterDeleted().length} deleted item${filterDeleted().length === 1 ? '' : 's'}`}</span>
-						<input className={`
+						<button className={`
 							appearance-none
 							border-none
 							outline-none
 							p-3
+							text-sm
+							flex
+							items-center
+							justify-center
 							rounded-full
 							h-6
-							w-6
+							w-auto
 							hover:bg-opacity-50
 							bg-red-400
 							bg-opacity-25
 							inline
-						`} type="button" title={'Clear trash'} onClick={emptyDeletedItems} value=""/>
+						`} title={'Clear trash'} onClick={emptyDeletedItems}>
+							<FontAwesomeIcon icon={faFire}/>&nbsp;Burn {filterDeleted().length > 1 ? 'them' : 'it'}
+						</button>
 					</div>
 					: null
 			}

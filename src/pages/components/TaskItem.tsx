@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ItemInputInline from '@/pages/components/ItemInputInline';
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
 
 interface TaskItemProps {
 	item: Item,
@@ -26,7 +27,7 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 	}
 
 	const handleDone = () => {
-		setDone(true);
+		setDone(!done);
 	}
 
 	const displayItemFragment = (
@@ -34,10 +35,14 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 			<div className={`
 			flex flex-col gap-3`}>
 				<div className={'flex flex-row gap-3 items-center'}>
-					<input className={`
+					<button className={`
 						appearance-none
-						dark:checked:bg-green-500
-						dark:checked:bg-opacity-25
+						text-sm
+						flex
+						items-center
+						justify-center
+						${done ? 'dark:hover:bg-green-500' : ''}
+						${done ? 'dark:bg-opacity-25' : ''}
 						border-none 
 						outline-none
 						p-3 
@@ -45,21 +50,25 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						h-6 
 						w-6
 						focus:bg-opacity-50
-						enabled:hover:bg-gradient-to-r
-						enabled:hover:from-green-200
-						checked:hover:bg-opacity-50
+						hover:text-green-200
+						focus:ring-2
+						ring-green-200
+						${done ? 'text-green-500' : ''}
+						${done ? 'hover:bg-opacity-50' : ''}
 						bg-white
 						dark:bg-gray-700 
 						bg-opacity-75
 						dark:bg-opacity-25
-					`} type="checkbox" checked={done} onChange={handleDone}/>
+					`} onClick={handleDone}>
+						<FontAwesomeIcon icon={faCheck}/>
+					</button>
 
 					<div className={`
 						appearance-none
 						border-none 
 						outline-none 
 						font-bold
-						p-3 
+						p-3
 						rounded-xl 
 						w-full 
 						focus:ring 
@@ -72,22 +81,29 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						${done ? 'line-through' : ''}
 					`} onClick={() => setEditMode(true)}>{item?.title || ''}</div>
 
-					<input className={`
+					<button className={`
 						appearance-none
 						border-none 
 						outline-none
 						p-3
+						text-xs
+						flex
+						items-center
+						justify-center
 						rounded-full
+						focus:ring-2
+						ring-red-200
 						h-6 
 						w-6
 						focus:bg-opacity-50
-						enabled:hover:bg-gradient-to-l
-						enabled:hover:from-red-300
+						hover:text-red-300
 						bg-white
 						dark:bg-gray-700 
 						bg-opacity-75
 						dark:bg-opacity-25
-					`} type="button" value="" onClick={() => markItemDeleted(item)}/>
+					`} onClick={() => markItemDeleted(item)}>
+						<FontAwesomeIcon icon={faTrash}/>
+					</button>
 				</div>
 				{item?.description && <div className={`
 					appearance-none
