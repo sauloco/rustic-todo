@@ -1,3 +1,5 @@
+"use client";
+
 import {Inter} from 'next/font/google'
 import React, {useEffect, useState} from 'react';
 import ItemInput from '@/pages/components/ItemInput';
