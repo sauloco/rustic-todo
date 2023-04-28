@@ -35,7 +35,7 @@ const Home: React.FC = () => {
 	const [items, setItems] = useState<Item[]>([]);
 	const [isLSAvailable, setIsLSAvailable] = useState(false)
 	const filterDeleted = () => items.filter(i => i.deleted)
-	const filterDone = () => items.filter(i => i.done)
+	const filterDone = () => items.filter(i => i.done && !i.deleted)
 	const filterPending = () => items.filter(i => !i.done && !i.deleted)
 
 	useEffect(() => {
