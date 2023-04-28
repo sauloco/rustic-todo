@@ -1,7 +1,7 @@
 import {Inter} from 'next/font/google'
-import {useEffect, useState} from 'react';
-import {ItemInput} from '@/pages/components/ItemInput';
-import {TaskList} from '@/pages/components/TaskList';
+import React, {useEffect, useState} from 'react';
+import ItemInput from '@/pages/components/ItemInput';
+import TaskList from '@/pages/components/TaskList';
 
 
 const inter = Inter({subsets: ['latin']})
@@ -30,7 +30,7 @@ const setLS = (key: string, value: any) => {
 	return false;
 }
 
-export default function Home() {
+const Home: React.FC = () => {
 
 	const [items, setItems] = useState<Item[]>([]);
 	const [isLSAvailable, setIsLSAvailable] = useState(false)
@@ -168,3 +168,5 @@ export default function Home() {
 		</main>
 	)
 }
+
+export default Home;

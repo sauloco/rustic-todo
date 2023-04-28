@@ -1,4 +1,5 @@
-import {TaskItem} from '@/pages/components/TaskItem';
+import TaskItem from '@/pages/components/TaskItem';
+import React from 'react';
 
 interface TaskListProps {
 	title?: string,
@@ -8,8 +9,8 @@ interface TaskListProps {
 	onItemDelete: (item: Item) => void,
 }
 
-export const TaskList = ({title, items, emptyMessage, onItemChange, onItemDelete}: TaskListProps) => {
-	return (items.length || (!items.length && emptyMessage)
+const TaskList: React.FC<TaskListProps> = ({title, items, emptyMessage, onItemChange, onItemDelete}) => {
+	return (items?.length || (!items?.length && emptyMessage)
 			? <div
 				className={`
 					flex 
@@ -24,7 +25,7 @@ export const TaskList = ({title, items, emptyMessage, onItemChange, onItemDelete
 					mx-3
 				`}>
 				{title && <h2 className={'font-light text-gray-400 text-2xl'}>{title}</h2>}
-				{items.length
+				{items?.length
 					? <ul>
 						{
 							items.map(item => (
@@ -38,3 +39,5 @@ export const TaskList = ({title, items, emptyMessage, onItemChange, onItemDelete
 			: null
 	);
 }
+
+export default TaskList

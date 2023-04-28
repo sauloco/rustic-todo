@@ -1,7 +1,8 @@
 import "@/styles/globals.css"
 import {AppProps} from 'next/app';
+import React from 'react';
 
-function RusticTodoApp({Component, pageProps}: AppProps) {
+const RusticTodoApp: React.FC<AppProps> = ({Component, pageProps}) => {
 	return (
 		<div className="
 		min-h-screen

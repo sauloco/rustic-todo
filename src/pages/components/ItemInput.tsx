@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {v4} from 'uuid';
 
 
@@ -8,7 +8,7 @@ interface ItemInputProps {
 	onSave: (item: Item) => void,
 }
 
-export const ItemInput = ({item, onSave, inline = false}: ItemInputProps) => {
+const ItemInput: React.FC<ItemInputProps> = ({item, onSave, inline = false}) => {
 	const [id, setId] = useState(item?.id || v4());
 	const [title, setTitle] = useState(item?.title || "");
 	const [description, setDescription] = useState(item?.description || "")
@@ -30,7 +30,7 @@ export const ItemInput = ({item, onSave, inline = false}: ItemInputProps) => {
 				id,
 			})
 		}
-	}, [title, description, id, currentItem])
+	}, [id, title, description])
 
 	const validateForm = () => {
 		setError("")
@@ -132,3 +132,5 @@ export const ItemInput = ({item, onSave, inline = false}: ItemInputProps) => {
 			type="button" value={inline ? "Save changes" : "Add task"} onClick={validateForm}/>
 	</div>
 }
+
+export default ItemInput

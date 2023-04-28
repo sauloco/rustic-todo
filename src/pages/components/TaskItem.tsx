@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {ItemInputInline} from '@/pages/components/ItemInputInline';
+import React, {useEffect, useState} from 'react';
+import ItemInputInline from '@/pages/components/ItemInputInline';
 
 
 interface TaskItemProps {
@@ -9,9 +9,9 @@ interface TaskItemProps {
 	onDelete: (item: Item) => void,
 }
 
-export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) => {
+const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete}) => {
 	const [editMode, setEditMode] = useState(false)
-	const [done, setDone] = useState(item.done)
+	const [done, setDone] = useState(item?.done || false)
 
 	const onInlineSaveClickHandler = (item: Item) => {
 		setEditMode(false)
@@ -25,7 +25,7 @@ export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) 
 		onDelete({...item, deleted: true})
 	}
 
-	useEffect(markItemDone, [item, done, onDone])
+	useEffect(markItemDone, [item, done])
 
 	const displayItemFragment = (
 		<div className={'select-text dark:bg-gray-800 rounded-xl p-3 mx-3 flex flex-col gap-3'}>
@@ -68,7 +68,7 @@ export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) 
 						bg-opacity-75
 						dark:bg-opacity-25
 						${done ? 'line-through' : ''}
-					`} onClick={() => setEditMode(true)}>{item.title}</div>
+					`} onClick={() => setEditMode(true)}>{item?.title || ''}</div>
 
 					<input className={`
 						appearance-none
@@ -87,7 +87,7 @@ export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) 
 						dark:bg-opacity-25
 					`} type="button" value="" onClick={() => markItemDeleted(item)}/>
 				</div>
-				{item.description && <div className={`
+				{item?.description && <div className={`
 					appearance-none
 					border-none 
 					outline-none 
@@ -104,7 +104,7 @@ export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) 
 					whitespace-pre-line
 					${done ? 'line-through' : ''}
 				`} onClick={() => setEditMode(true)}
-				>{item.description}</div>}
+				>{item?.description}</div>}
 			</div>
 		</div>
 	)
@@ -120,3 +120,4 @@ export const TaskItem = ({item, onDone, onInlineSave, onDelete}: TaskItemProps) 
 		</li>)
 }
 
+export default TaskItem;
