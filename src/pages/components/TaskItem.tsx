@@ -13,19 +13,21 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 	const [editMode, setEditMode] = useState(false)
 	const [done, setDone] = useState(item?.done || false)
 
+	useEffect(() => {
+		onDone({...item, done})
+	}, [done])
+
 	const onInlineSaveClickHandler = (item: Item) => {
 		setEditMode(false)
 		onInlineSave(item)
 	}
-	const markItemDone = () => {
-		onDone({...item, done})
-	}
-
 	const markItemDeleted = (item: Item) => {
 		onDelete({...item, deleted: true})
 	}
 
-	useEffect(markItemDone, [item, done])
+	const handleDone = () => {
+		setDone(true);
+	}
 
 	const displayItemFragment = (
 		<div className={'select-text dark:bg-gray-800 rounded-xl p-3 mx-3 flex flex-col gap-3'}>
@@ -50,7 +52,7 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						dark:bg-gray-700 
 						bg-opacity-75
 						dark:bg-opacity-25
-					`} type="checkbox" checked={done} onChange={() => setDone(!done)}/>
+					`} type="checkbox" checked={done} onChange={handleDone}/>
 
 					<div className={`
 						appearance-none
