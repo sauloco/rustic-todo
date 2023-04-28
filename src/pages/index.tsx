@@ -7,50 +7,45 @@ import TaskList from '@/pages/components/TaskList';
 const inter = Inter({subsets: ['latin']})
 
 const getLS = (key: string) => {
-	let savedData;
-	if (typeof window !== 'undefined') {
-		try {
-			savedData = localStorage.getItem(key)
-		} catch (e) {
-			// intentionally empty
-		}
-	}
+	const savedData = localStorage.getItem(key)
 	return savedData ? JSON.parse(savedData) : null
 }
 
 const setLS = (key: string, value: any) => {
-	if (typeof window !== 'undefined') {
-		try {
-			localStorage.setItem(key, JSON.stringify(value))
-			return true;
-		} catch (e) {
-			// intentionally empty
-		}
+	try {
+		localStorage.setItem(key, JSON.stringify(value))
+		return true;
+	} catch (e) {
+		console.error(`Error setting '${key}' to "${value.toString()}" on Local Storage`)
+		console.error(e)
 	}
 	return false;
 }
 
 const Home: React.FC = () => {
-
+	const isLocalStorageAvailable = typeof window !== 'undefined' && window?.localStorage;
 	const [items, setItems] = useState<Item[]>([]);
-	const [isLSAvailable, setIsLSAvailable] = useState(false)
+	const [isLocalStorageSavingEnabled, setIsLocalStorageSavingEnabled] = useState(false)
 	const filterDeleted = () => items.filter(i => i.deleted)
 	const filterDone = () => items.filter(i => i.done && !i.deleted)
 	const filterPending = () => items.filter(i => !i.done && !i.deleted)
 
 	useEffect(() => {
-		if (isLSAvailable) {
+		if (isLocalStorageAvailable && isLocalStorageSavingEnabled) {
 			setLS('items', items)
 		}
-	}, [items, isLSAvailable])
+	}, [items, isLocalStorageSavingEnabled, isLocalStorageAvailable])
 
 	useEffect(() => {
+		if (!isLocalStorageAvailable) {
+			return;
+		}
 		const oldData = getLS('items')
 		let oldItems: Item[] = []
 		if (oldData) {
 			oldItems = oldData as Item[]
 			setItems(oldItems)
-			setIsLSAvailable(true)
+			setIsLocalStorageSavingEnabled(true)
 		}
 	}, [])
 	const handleItemSave = (item: Item) => {
