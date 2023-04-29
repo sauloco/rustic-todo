@@ -31,7 +31,7 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 	}
 
 	const displayItemFragment = (
-		<div className={'select-text dark:bg-gray-800 rounded-xl p-3 mx-3 flex flex-col gap-3'}>
+		<div className={'select-text dark:bg-gray-800 rounded-xl m-3 flex flex-col'}>
 			<div className={`
 			flex flex-col gap-3`}>
 				<div className={'flex flex-row gap-3 items-center'}>
