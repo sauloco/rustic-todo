@@ -4,7 +4,6 @@ import ItemInput from '@/pages/components/ItemInput';
 import TaskList from '@/pages/components/TaskList';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFire, faTrashRestore} from '@fortawesome/free-solid-svg-icons';
-import Head from 'next/head';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -98,17 +97,6 @@ const Home: React.FC = () => {
 		<main
 			className={`flex flex-col gap-4 ${inter.className}`}
 		>
-			<Head>
-				<title>Rustic Tasks</title>
-				<meta charSet="utf-8"/>
-				<meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-				<meta name="description" content="Task manager from Rustic IT"/>
-				<meta name="author" content="Saulo Vargas | saulo@rusticit.com"/>
-				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
-				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
-				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
-				<link rel="manifest" href="/site.webmanifest"/>
-			</Head>
 			<h1
 				className={`
 					font-extrabold 
