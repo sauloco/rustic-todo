@@ -45,10 +45,10 @@ const Trash: React.FC<TrashProps> = ({items, onBurn, onRestore}) => {
 							inline
 						`} title={'Restore items'} onClick={() => onRestore()} value="">
 			<FontAwesomeIcon icon={faTrashRestore}/>
-			<span className={'sm:inline hidden'}>&nbsp;Restore {items.length > 1 ? 'all' : 'it'}</span>
+			<span className={'sm:inline hidden'}>&nbsp;Restore {items?.length > 1 ? 'all' : 'it'}</span>
 		</button>
 		<span
-			className={`w-auto`}>{`Trash has ${items.length} deleted item${items.length === 1 ? '' : 's'}`}</span>
+			className={`w-auto`}>{`Trash has ${items?.length} deleted item${items?.length === 1 ? '' : 's'}`}</span>
 		<button className={`
 							appearance-none
 							border-none
@@ -67,7 +67,7 @@ const Trash: React.FC<TrashProps> = ({items, onBurn, onRestore}) => {
 							inline
 						`} title={'Burn trash'} onClick={() => onBurn()}>
 			<FontAwesomeIcon icon={faFire}/>
-			<span className={'sm:inline hidden'}>&nbsp;Burn {items.length > 1 ? 'them' : 'it'}</span>
+			<span className={'sm:inline hidden'}>&nbsp;Burn {items?.length > 1 ? 'them' : 'it'}</span>
 		</button>
 	</div>;
 }
