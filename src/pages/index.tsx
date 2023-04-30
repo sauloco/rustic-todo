@@ -4,9 +4,9 @@ import ItemInput from '@/pages/components/ItemInput';
 import TaskList from '@/pages/components/TaskList';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFire, faTrashRestore} from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const inter = Inter({subsets: ['latin']})
-
 
 const getLS = (key: string) => {
 	const savedData = localStorage.getItem(key)
@@ -29,6 +29,7 @@ const Home: React.FC = () => {
 	const [isLocalStorageAvailable, setIsLocalStorageAvailable] = useState(false);
 	const [items, setItems] = useState<Item[]>([]);
 	const [isLocalStorageSavingEnabled, setIsLocalStorageSavingEnabled] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const filterDeleted = () => items.filter(i => i.deleted)
 	const filterDone = () => items.filter(i => i.done && !i.deleted)
 	const filterPending = () => items.filter(i => !i.done && !i.deleted)
@@ -64,6 +65,39 @@ const Home: React.FC = () => {
 			...items,
 			item,
 		])
+	}
+
+	const handleChatGPTItemSave = async (item: Item) => {
+		setIsLoading(true)
+		const response = await axios.get('/api/assistant', {
+			params: {
+				prompt: item.title,
+				description: item.description,
+			}
+		})
+
+		if (response.status !== 200) {
+			const {message} = response.data
+			console.error(message)
+			return;
+		}
+
+		const suggestedItems = response.data
+
+		setIsLoading(false)
+
+		if (suggestedItems.length) {
+			setItems([
+				...items,
+				...suggestedItems,
+			])
+			return;
+		}
+		setItems([
+			...items,
+			item,
+		])
+
 	}
 
 	const handleItemChange = (item: Item) => {
@@ -115,7 +149,7 @@ const Home: React.FC = () => {
 					dark:to-[#F7F7F7]
 				`}>Rustic
 				Tasks</h1>
-			<ItemInput onSave={handleItemSave}/>
+			<ItemInput onSave={handleItemSave} onAiGenerate={handleChatGPTItemSave} enabled={!isLoading}/>
 			<TaskList title={`Pending ${filterPending().length ? filterPending().length : ''}`} items={filterPending()}
 			          onItemChange={handleItemChange}
 			          onItemDelete={handleItemChange} emptyMessage={"No pending tasks yet! Add one"}/>

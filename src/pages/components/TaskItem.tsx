@@ -30,6 +30,25 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 		setDone(!done);
 	}
 
+	const humanReadableDate = (futureUnix: number, currentUnix: number) => {
+		const futureDate = new Date(futureUnix).getTime();
+		const currentDate = new Date(currentUnix).getTime();
+		const diff = futureDate - currentDate;
+
+		const formatter = new Intl.RelativeTimeFormat('en', {
+			numeric: 'auto',
+			style: 'long',
+			localeMatcher: 'best fit'
+		});
+		const rawDate = new Date(futureDate).toLocaleDateString() + ' ' + new Date(futureDate).toLocaleTimeString()
+		const readable = formatter.format(Math.round(diff / 86400000), 'day');
+		if (readable === 'today') {
+			const hours = formatter.format(Math.round(diff / 86400000), 'hour');
+			return `@ ${rawDate} - ${hours}`
+		}
+		return `@ ${rawDate} - ${readable}`
+	}
+
 	const displayItemFragment = (
 		<div className={'select-text dark:bg-gray-800 rounded-xl m-3 flex flex-col'}>
 			<div className={`
@@ -64,6 +83,8 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 					</button>
 
 					<div className={`
+						flex
+						flex-col
 						appearance-none
 						border-none 
 						outline-none 
@@ -79,7 +100,18 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						bg-opacity-75
 						dark:bg-opacity-25
 						${done ? 'line-through' : ''}
-					`} onClick={() => setEditMode(true)}>{item?.title || ''}</div>
+					`} onClick={() => setEditMode(true)}>
+						<p>{item?.title}</p>
+						{item?.dateCompletion
+							? <div className={'text-xs font-normal text-right self-end dark:text-gray-500'}>
+								<span>Suggested</span>&nbsp;
+								<time
+									dateTime={new Date(item.dateCompletion).toISOString()}>{humanReadableDate(item.dateCompletion, new Date().getTime())}</time>
+							</div>
+							: null
+						}
+
+					</div>
 
 					<button className={`
 						appearance-none
