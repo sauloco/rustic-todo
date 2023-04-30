@@ -132,7 +132,6 @@ const Home: React.FC = () => {
 		>
 			<h1
 				className={`
-					font-extrabold 
 					text-4xl 
 					text-center 
 					my-3 
@@ -146,8 +145,7 @@ const Home: React.FC = () => {
 					to-60% 
 					to-[#353535]
 					dark:to-[#F7F7F7]
-				`}>Rustic
-				Tasks</h1>
+				`}>todo<b>ai</b>d</h1>
 			<ItemInput onSave={handleItemSave} onAiGenerate={handleChatGPTItemSave} enabled={!isLoading}/>
 			<TaskList title={`Pending ${filterPending().length ? filterPending().length : ''}`} items={filterPending()}
 			          onItemChange={handleItemChange}
