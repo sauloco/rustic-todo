@@ -8,8 +8,8 @@ interface ItemInputProps {
 	item?: Item,
 	inline?: boolean,
 	onSave: (item: Item) => void,
-	onAiGenerate: (item: Item) => void,
-	enabled: boolean
+	onAiGenerate?: (item: Item) => void,
+	enabled?: boolean
 }
 
 const ItemInput: React.FC<ItemInputProps> = ({item, onSave, onAiGenerate, inline = false, enabled = true}) => {
@@ -43,7 +43,7 @@ const ItemInput: React.FC<ItemInputProps> = ({item, onSave, onAiGenerate, inline
 			setError("Task title can't be empty")
 			return;
 		}
-		if (useAI) {
+		if (useAI && onAiGenerate) {
 			onAiGenerate(currentItem)
 		} else {
 			onSave(currentItem)
