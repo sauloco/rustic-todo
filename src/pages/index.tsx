@@ -2,9 +2,8 @@ import {Inter} from 'next/font/google'
 import React, {useEffect, useState} from 'react';
 import ItemInput from '@/pages/components/ItemInput';
 import TaskList from '@/pages/components/TaskList';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFire, faTrashRestore} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import Trash from '@/pages/components/Trash';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -156,69 +155,8 @@ const Home: React.FC = () => {
 			<TaskList title={`Already Done ${filterDone().length ? filterDone().length : ''}`} items={filterDone()}
 			          onItemChange={handleItemChange}
 			          onItemDelete={handleItemChange}/>
-			{
-				filterDeleted().length
-					? <div
-						className={`
-							sticky 
-							bottom-0 
-							bg-gray-300
-							dark:bg-gray-700 
-							p-3 
-							backdrop-blur-md
-							rounded-lg 
-							bg-opacity-25
-							flex 
-							flex-row 
-							items-center 
-							justify-between 
-							m-3 
-							mt-0
-							w-auto
-						`}>
-						<button className={`
-							appearance-none
-							border-none
-							outline-none
-							p-3
-							text-sm
-							flex
-							items-center
-							justify-center
-							rounded-full
-							h-6
-							w-auto
-							hover:bg-opacity-50
-							bg-blue-400
-							bg-opacity-25
-							inline
-						`} title={'Restore'} onClick={restoreDeletedItems} value="">
-							<FontAwesomeIcon icon={faTrashRestore}/>&nbsp;Restore {filterDeleted().length > 1 ? 'all' : 'it'}
-						</button>
-						<span
-							className={`w-auto`}>{`Trash has ${filterDeleted().length} deleted item${filterDeleted().length === 1 ? '' : 's'}`}</span>
-						<button className={`
-							appearance-none
-							border-none
-							outline-none
-							p-3
-							text-sm
-							flex
-							items-center
-							justify-center
-							rounded-full
-							h-6
-							w-auto
-							hover:bg-opacity-50
-							bg-red-400
-							bg-opacity-25
-							inline
-						`} title={'Clear trash'} onClick={emptyDeletedItems}>
-							<FontAwesomeIcon icon={faFire}/>&nbsp;Burn {filterDeleted().length > 1 ? 'them' : 'it'}
-						</button>
-					</div>
-					: null
-			}
+			<Trash items={filterDeleted()} onBurn={emptyDeletedItems} onRestore={restoreDeletedItems}/>
+
 		</main>
 	)
 }
