@@ -92,12 +92,12 @@ const Home: React.FC = () => {
 					...items,
 					...suggestedItems,
 				])
-				return;
+			} else {
+				setItems([
+					...items,
+					item,
+				])
 			}
-			setItems([
-				...items,
-				item,
-			])
 		} catch (e) {
 			console.error(e)
 			// @ts-ignore
