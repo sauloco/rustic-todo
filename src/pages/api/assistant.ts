@@ -50,23 +50,27 @@ export default async function handler(
 
 	const now = new Date().toISOString();
 	const enhancedPrompt = `${decodeURI(prompt)}. ${description ? `Description: ${decodeURI(description)}. ` : ''}Current date: ${now}`
-	let chatRes = await api.sendMessage(enhancedPrompt, {systemMessage})
-	const items: Item[] = []
-	for (const line of chatRes.text.split('\n')) {
-		if (line.includes('] ')) {
-			const [date, task] = line.split('- [').join('').split('] ');
-			console.log(date)
-			const dateCompletion = new Date(date).getTime();
-			console.log(dateCompletion)
-			items.push({
-				id: v4(),
-				title: task,
-				done: false,
-				deleted: false,
-				dateCompletion,
-			})
-		}
-	}
+	try {
 
-	res.status(200).json(items);
+		let chatRes = await api.sendMessage(enhancedPrompt, {systemMessage})
+		const items: Item[] = []
+		for (const line of chatRes.text.split('\n')) {
+			if (line.includes('] ')) {
+				const [date, task] = line.split('- [').join('').split('] ');
+				const dateCompletion = new Date(date).getTime();
+				items.push({
+					id: v4(),
+					title: task,
+					done: false,
+					deleted: false,
+					dateCompletion,
+				})
+			}
+		}
+
+		res.status(200).json(items);
+	} catch (e) {
+		console.error(e);
+		res.status(503).json({message: `AI Not Available. Retry later.`})
+	}
 }

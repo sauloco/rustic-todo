@@ -29,6 +29,7 @@ const Home: React.FC = () => {
 	const [items, setItems] = useState<Item[]>([]);
 	const [isLocalStorageSavingEnabled, setIsLocalStorageSavingEnabled] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
+	const [serverError, setServerError] = useState('');
 	const filterDeleted = () => items.filter(i => i.deleted)
 	const filterDone = () => items.filter(i => i.done && !i.deleted)
 	const filterPending = () => items.filter(i => !i.done && !i.deleted)
@@ -68,35 +69,46 @@ const Home: React.FC = () => {
 
 	const handleChatGPTItemSave = async (item: Item) => {
 		setIsLoading(true)
-		const response = await axios.get('/api/assistant', {
-			params: {
-				prompt: item.title,
-				description: item.description,
+		try {
+			const response = await axios.get('/api/assistant', {
+				params: {
+					prompt: item.title,
+					description: item.description,
+				}
+			})
+
+			if (response.status !== 200) {
+				const {message} = response.data
+				console.error(message)
+				setIsLoading(false)
+				return;
 			}
-		})
 
-		if (response.status !== 200) {
-			const {message} = response.data
-			console.error(message)
-			return;
-		}
+			const suggestedItems = response.data
 
-		const suggestedItems = response.data
 
-		setIsLoading(false)
-
-		if (suggestedItems.length) {
+			if (suggestedItems.length) {
+				setItems([
+					...items,
+					...suggestedItems,
+				])
+				return;
+			}
 			setItems([
 				...items,
-				...suggestedItems,
+				item,
 			])
-			return;
+		} catch (e) {
+			console.error(e)
+			// @ts-ignore
+			if (e && typeof e === 'object' && (e?.response?.data?.message || e?.message)) {
+				// @ts-ignore
+				setServerError(e?.response?.data?.message || e?.message)
+			} else {
+				setServerError('Unexpected error.')
+			}
 		}
-		setItems([
-			...items,
-			item,
-		])
-
+		setIsLoading(false)
 	}
 
 	const handleItemChange = (item: Item) => {
@@ -146,7 +158,8 @@ const Home: React.FC = () => {
 					to-[#353535]
 					dark:to-[#F7F7F7]
 				`}>todo<b>ai</b>d</h1>
-			<ItemInput onSave={handleItemSave} onAiGenerate={handleChatGPTItemSave} enabled={!isLoading}/>
+			<ItemInput displayError={serverError} onSave={handleItemSave} onAiGenerate={handleChatGPTItemSave}
+			           enabled={!isLoading}/>
 			<TaskList title={`Pending ${filterPending().length ? filterPending().length : ''}`} items={filterPending()}
 			          onItemChange={handleItemChange}
 			          onItemDelete={handleItemChange} emptyMessage={"No pending tasks yet! Add one"}/>

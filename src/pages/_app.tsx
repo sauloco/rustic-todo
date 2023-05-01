@@ -12,11 +12,11 @@ const RusticTodoApp: React.FC<AppProps> = ({Component, pageProps}) => {
 				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
 				<link rel="manifest" href="/site.webmanifest"/>
-				<title>Rustic Tasks</title>
+				<title>todoAId</title>
 				<meta charSet="utf-8"/>
 				<meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-				<meta name="description" content="Task manager from Rustic IT"/>
-				<meta name="author" content="Saulo Vargas | saulo@rusticit.com"/>
+				<meta name="description" content="AI Powered Task Manager – from Rustic IT"/>
+				<meta name="author" content="Saulo Vargas<saulo@rusticit.com>"/>
 			</Head>
 			<div className="
 		min-h-screen
@@ -31,6 +31,8 @@ const RusticTodoApp: React.FC<AppProps> = ({Component, pageProps}) => {
 		transition-all">
 				<Component {...pageProps} />
 			</div>
+			<script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+			        data-cf-beacon='{"token": "9bb9ced34458459dab8e5c4d6fe97084"}'></script>
 		</>
 
 	)
