@@ -2,8 +2,16 @@
 
 ## Ideas and ToDo List
 
-- [x] Add ChatGPT integration
+### UI/UX Improvements
+
 - [x] Support Dark/Light modes
+- [ ] Add Date Sorting
+- [ ] Add Custom Sorting w/Drag&Drop
+- [ ] Add Labels / Folders
+
+### Features
+
+- [x] Add ChatGPT integration
 - [ ] Add Task Time
 - [x] Add Suggested Task Time
 - [ ] Add Task Location
@@ -13,10 +21,10 @@
 - [ ] Add multiple tasks as a workflow / template
 - [ ] Add persistent storage
 
+## Getting Started
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped
 with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
 
 First, run the development server:
 
