@@ -55,7 +55,7 @@ const HumanReadableDate: React.FC<HumanReadableDateProps> = ({date, prefix, from
 	return (
 		<p title={readableDate}>
 			{prefix ? <span>{prefix}&nbsp;</span> : null}
-			<time dateTime={date.toISOString()}>{humanReadableDate}</time>
+			<time dateTime={date?.toISOString() || ''}>{humanReadableDate}</time>
 		</p>
 	)
 }
