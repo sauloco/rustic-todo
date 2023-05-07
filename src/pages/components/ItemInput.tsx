@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {v4} from 'uuid';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faInfoCircle, faPen, faPlus, faWandMagicSparkles} from '@fortawesome/free-solid-svg-icons';
+import {Item} from '@/types';
 
 
 interface ItemInputProps {
@@ -21,7 +22,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 	                                             enabled = true,
 	                                             displayError
                                              }) => {
-	const [id, setId] = useState(item?.id || v4());
+	const id = item?.id || v4();
 	const [title, setTitle] = useState(item?.title || "");
 	const [description, setDescription] = useState(item?.description || "")
 	const [error, setError] = useState("")
@@ -29,9 +30,17 @@ const ItemInput: React.FC<ItemInputProps> = ({
 		title,
 		description,
 		id,
-		done: false,
-		deleted: false,
-		dateCompletion: item?.dateCompletion || null,
+		done: item?.done || false,
+		deleted: item?.deleted || false,
+		createdAt: item?.createdAt,
+		goalAt: item?.goalAt,
+		completedAt: item?.completedAt,
+		location: item?.location,
+		people: item?.people,
+		flag: item?.flag,
+		ai: item?.ai ?? false,
+		prompt: item?.prompt,
+		promptDescription: item?.promptDescription,
 	})
 
 	useEffect(() => {
@@ -45,7 +54,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 		}
 	}, [id, title, description])
 
-	const validateForm = (useAI: boolean = false) => {
+	const createItem = (useAI: boolean = false) => {
 		setError("")
 		if (!title) {
 			setError("Task title can't be empty")
@@ -56,17 +65,8 @@ const ItemInput: React.FC<ItemInputProps> = ({
 		} else {
 			onSave(currentItem)
 		}
-
-
-		resetForm()
 	}
 
-	const resetForm = () => {
-		setTitle("")
-		setDescription("")
-		setError("")
-		setId(v4())
-	}
 	return (<>
 			<div
 				className={`
@@ -108,7 +108,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 						value={title}
 						disabled={!enabled}
 						placeholder={`${inline ? 'Modify task' : 'Add a task'}${error ? ' (we kinda need this)' : '...'}`}
-						onKeyDown={(e) => e.key === "Enter" ? validateForm() : null}
+						onKeyDown={(e) => e.key === "Enter" ? createItem() : null}
 						onChange={event => setTitle(event.target.value)}/>
 					{inline && <button className={`
 						border-none 
@@ -132,8 +132,9 @@ const ItemInput: React.FC<ItemInputProps> = ({
 						dark:bg-gray-700 
 						bg-opacity-75
 						dark:bg-opacity-25
-					`} disabled={!enabled} onClick={() => validateForm()}>
+					`} disabled={!enabled} onClick={() => createItem()}>
 
+						{/*<FontAwesomeIcon icon={item?.ai ? faWandMagicSparkles : faPen}/>*/}
 						<FontAwesomeIcon icon={faPen}/>
 
 					</button>
@@ -189,7 +190,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 							dark:bg-gray-700 
 							bg-opacity-75
 							dark:bg-opacity-25
-						`} disabled={!enabled} onClick={() => validateForm(true)}>
+						`} disabled={!enabled} onClick={() => createItem()}>
 								<div className={'m-1'}>
 									<FontAwesomeIcon icon={faPlus}/>
 									<span>&nbsp;Add Task</span>
@@ -220,7 +221,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 							focus:bg-opacity-50
 							bg-opacity-25
 							dark:bg-opacity-75
-						`} disabled={!enabled || !!displayError} onClick={() => validateForm(true)}>
+						`} disabled={!enabled || !!displayError} onClick={() => createItem(true)}>
 								<div className={'m-1'}>
 									<FontAwesomeIcon icon={faWandMagicSparkles}/>
 									<span>&nbsp;Add <b>Smart</b> Task</span>
@@ -236,7 +237,7 @@ const ItemInput: React.FC<ItemInputProps> = ({
 					<span>&nbsp;
 						{displayError
 							? `${displayError} Please, use Add Task.`
-							: "Smart Task will use AI to break your task in simple steps"
+							: "Smart Task will use AI to simplify your task in a few steps, and will try to aggregate location, time and people."
 						}
 					</span>
 				</span>

@@ -1,21 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import ItemInputInline from '@/pages/components/ItemInputInline';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {faCheck, faFlag, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {Item} from '@/types';
+import HumanReadableDate from '@/pages/components/HumanReadableDate';
+import ContextFilter from '@/pages/components/ContextFilter';
 
 interface TaskItemProps {
 	item: Item,
 	onDone: (item: Item) => void,
 	onInlineSave: (item: Item) => void,
 	onDelete: (item: Item) => void,
+	onContextFilter: (prop: keyof Item, value: any) => void,
+	filtering: boolean,
+	onClearFilter: () => void,
+	filteredValue?: string,
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete}) => {
+const TaskItem: React.FC<TaskItemProps> = ({
+	                                           item,
+	                                           onDone,
+	                                           onInlineSave,
+	                                           onDelete,
+	                                           onContextFilter,
+	                                           onClearFilter,
+	                                           filteredValue,
+                                           }) => {
 	const [editMode, setEditMode] = useState(false)
 	const [done, setDone] = useState(item?.done || false)
 
 	useEffect(() => {
-		onDone({...item, done})
+		onDone({...item, done, completedAt: done ? item.completedAt || Date.now() : undefined})
 	}, [done])
 
 	const onInlineSaveClickHandler = (item: Item) => {
@@ -28,25 +43,6 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 
 	const handleDone = () => {
 		setDone(!done);
-	}
-
-	const humanReadableDate = (futureUnix: number, currentUnix: number) => {
-		const futureDate = new Date(futureUnix).getTime();
-		const currentDate = new Date(currentUnix).getTime();
-		const diff = futureDate - currentDate;
-
-		const formatter = new Intl.RelativeTimeFormat('en', {
-			numeric: 'auto',
-			style: 'long',
-			localeMatcher: 'best fit'
-		});
-		const rawDate = new Date(futureDate).toLocaleDateString() + ' ' + new Date(futureDate).toLocaleTimeString()
-		const readable = formatter.format(Math.round(diff / 86400000), 'day');
-		if (readable === 'today') {
-			const hours = formatter.format(Math.round(diff / 86400000), 'hour');
-			return `@ ${rawDate} - ${hours}`
-		}
-		return `@ ${rawDate} - ${readable}`
 	}
 
 	const displayItemFragment = (
@@ -89,7 +85,7 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						border-none 
 						outline-none 
 						font-bold
-						p-3
+						py-3
 						rounded-xl 
 						w-full 
 						focus:ring 
@@ -99,18 +95,51 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 						dark:bg-gray-700 
 						bg-opacity-75
 						dark:bg-opacity-25
-						${done ? 'line-through' : ''}
 					`} onClick={() => setEditMode(true)}>
-						<p>{item?.title}</p>
-						{item?.dateCompletion
-							? <div className={'text-xs font-normal text-right self-end dark:text-gray-500'}>
-								<span>Suggested</span>&nbsp;
-								<time
-									dateTime={new Date(item.dateCompletion).toISOString()}>{humanReadableDate(item.dateCompletion, new Date().getTime())}</time>
-							</div>
-							: null
-						}
+						<div className={'flex flex-row gap-3'}>
+							{item?.flag &&
+								<span className={`text-red-500 bg-red-300 rounded-full
+								text-sm
+								h-6
+								w-6
+								flex
+								items-center
+								justify-center
+								p-1
+								`}
+								      title={'Flags can get you banned'}><FontAwesomeIcon icon={faFlag}/></span>
+							}
+							<span>
 
+							{item?.title}
+								{item?.location
+									? <>
+										&nbsp;
+										<ContextFilter filterProperty={'location'} filterValue={item.location}
+										               onFilter={onContextFilter} onClearFilter={onClearFilter} prefix={'@'}
+										               pinned={filteredValue?.toLowerCase() === item.location.toLowerCase()}/>
+									</>
+									: null
+								}
+								{item?.people
+									? <>&nbsp;<span className={'text-gray-500 text-sm'}>With</span> {item.people.map(person => <span
+										key={person}>
+									&nbsp;
+										<ContextFilter filterProperty={'people'} filterValue={person}
+										               onFilter={onContextFilter} onClearFilter={onClearFilter}
+										               pinned={filteredValue?.toLowerCase() === person.toLowerCase()}/>
+								</span>)}
+									</>
+									: null
+								}
+						</span>
+						</div>
+
+						<div className={'text-xs font-normal dark:text-gray-500'}>
+							{/*{item?.createdAt ? <HumanReadableDate date={new Date(item.createdAt)} prefix={'Created'}/> : null}*/}
+							{item?.goalAt ? <HumanReadableDate date={new Date(item.goalAt)} prefix={''}/> : null}
+							{item?.completedAt ? <HumanReadableDate date={new Date(item.completedAt)} prefix={'Completed'}/> : null}
+						</div>
 					</div>
 
 					<button className={`
@@ -152,7 +181,6 @@ const TaskItem: React.FC<TaskItemProps> = ({item, onDone, onInlineSave, onDelete
 					dark:bg-gray-700 
 					dark:bg-opacity-25
 					whitespace-pre-line
-					${done ? 'line-through' : ''}
 				`} onClick={() => setEditMode(true)}
 				>{item?.description}</div>}
 			</div>

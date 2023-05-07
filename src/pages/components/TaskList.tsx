@@ -1,15 +1,30 @@
 import TaskItem from '@/pages/components/TaskItem';
 import React from 'react';
+import {Item} from '@/types';
 
-interface TaskListProps {
+export interface TaskListProps {
 	title?: string,
-	items: Item[],
+	items?: Item[],
 	emptyMessage?: string,
 	onItemChange: (item: Item) => void,
 	onItemDelete: (item: Item) => void,
+	onContextFilter: (prop: keyof Item, value: any) => void,
+	filtering: boolean,
+	onClearFilter: () => void,
+	filteredValue?: string,
 }
 
-const TaskList: React.FC<TaskListProps> = ({title, items, emptyMessage, onItemChange, onItemDelete}) => {
+const TaskList: React.FC<TaskListProps> = ({
+	                                           title,
+	                                           items,
+	                                           emptyMessage,
+	                                           onItemChange,
+	                                           onItemDelete,
+	                                           filtering = false,
+	                                           onContextFilter,
+	                                           onClearFilter,
+	                                           filteredValue
+                                           }) => {
 	return (items?.length || (!items?.length && emptyMessage)
 			? <div
 				className={`
@@ -30,7 +45,8 @@ const TaskList: React.FC<TaskListProps> = ({title, items, emptyMessage, onItemCh
 						{
 							items.map(item => (
 								<TaskItem key={item.id} item={item} onDone={onItemChange} onInlineSave={onItemChange}
-								          onDelete={onItemDelete}/>))
+								          onDelete={onItemDelete} filtering={filtering} onContextFilter={onContextFilter}
+								          onClearFilter={onClearFilter} filteredValue={filteredValue}/>))
 						}
 					</ul>
 					: (emptyMessage && <p className={"font-light text-gray-400"}>{emptyMessage}</p>)

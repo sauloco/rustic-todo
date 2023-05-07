@@ -1,15 +1,16 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFire, faTrashRestore} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
+import {Item} from '@/types';
 
 interface TrashProps {
 	onBurn: () => void,
 	onRestore: () => void,
-	items: Item[]
+	items?: Item[]
 }
 
 const Trash: React.FC<TrashProps> = ({items, onBurn, onRestore}) => {
-	return (!!items?.length ?
+	return (items?.length ?
 			<div
 				className={`
 							sticky 

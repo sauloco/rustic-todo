@@ -1,5 +1,6 @@
 import ItemInput from '@/pages/components/ItemInput';
 import React from 'react';
+import {Item} from '@/types';
 
 interface ItemInputInlineProps {
 	item: Item,
