@@ -85,7 +85,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
 						border-none 
 						outline-none 
 						font-bold
-						py-3
+						p-3
 						rounded-xl 
 						w-full 
 						focus:ring 
