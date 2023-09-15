@@ -98,7 +98,7 @@ export default async function handler(
 
 	const now = new Date().toISOString();
 	const decodedDescription = description ? decodeURI(description) : '';
-	const enhancedPrompt = `${decodeURI(prompt)}. ${description ? `Description: ${decodedDescription}. ` : ''}Current date: ${now}`
+	const enhancedPrompt = `${decodeURI(prompt)}. ${description ? `Task Context: ${decodedDescription}. ` : ''}Datetime: ${now}`
 	try {
 
 		let chatRes = await api.sendMessage(enhancedPrompt, {systemMessage})
